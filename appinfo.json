@@ -1,0 +1,84 @@
+{
+    "appKeys": {
+        "KEY_CONDITIONS": 1,
+        "KEY_TEMPERATURE": 0
+    },
+    "capabilities": [
+        "location",
+        "configurable"
+    ],
+    "companyName": "kjtehprogrammer@gmail.com",
+    "longName": "AndroidHome",
+    "projectType": "native",
+    "resources": {
+        "media": [
+            {
+                "file": "images/storming.png",
+                "name": "IMAGE_WEATHER_STORMING",
+                "type": "png"
+            },
+            {
+                "file": "images/snowing.png",
+                "name": "IMAGE_WEATHER_SNOWING",
+                "type": "png"
+            },
+            {
+                "file": "images/raining.png",
+                "name": "IMAGE_WEATHER_RAINING",
+                "type": "png"
+            },
+            {
+                "file": "images/cloudy.png",
+                "name": "IMAGE_WEATHER_CLOUDY",
+                "type": "png"
+            },
+            {
+                "file": "images/sunny.png",
+                "name": "IMAGE_WEATHER_SUNNY",
+                "type": "png"
+            },
+            {
+                "file": "images/night.png",
+                "name": "IMAGE_WEATHER_NIGHT",
+                "type": "png"
+            },
+            {
+                "file": "fonts/Roboto-Regular.ttf",
+                "name": "FONT_ROBOTO_REGULAR_10",
+                "type": "font"
+            },
+            {
+                "file": "fonts/Roboto-Regular.ttf",
+                "name": "FONT_ROBOTO_REGULAR_12",
+                "type": "font"
+            },
+            {
+                "file": "fonts/Roboto-Regular.ttf",
+                "name": "FONT_ROBOTO_REGULAR_16",
+                "type": "font"
+            },
+            {
+                "file": "fonts/Roboto-Light.ttf",
+                "name": "FONT_ROBOTO_LIGHT_32",
+                "type": "font"
+            },
+            {
+                "file": "fonts/Roboto-Light.ttf",
+                "name": "FONT_ROBOTO_LIGHT_46",
+                "type": "font"
+            }
+        ]
+    },
+    "sdkVersion": "3",
+    "shortName": "AndroidHome",
+    "targetPlatforms": [
+        "aplite",
+        "basalt"
+    ],
+    "uuid": "60a493b7-1744-43fd-9519-51a8361dfdb3",
+    "versionCode": 1,
+    "versionLabel": "1.0",
+    "watchapp": {
+        "watchface": false
+    }
+}
