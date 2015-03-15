@@ -9,6 +9,7 @@ static Layer *s_seconds_layer;
 static int seconds_width = 0;
 static bool clock_is_24h = true;
 static bool datetime_initialized = false;
+static bool showing_notifications = false;
 
 // Functions
 void datetime_init (Window *window);
@@ -18,3 +19,6 @@ void datetime_update_seconds_layer (Layer *layer, GContext *ctx);
 void datetime_update_minutes (struct tm *tick_time, bool changed_style);
 void datetime_update_days (struct tm *tick_time);
 void datetime_clock_handler (struct tm *tick_time, TimeUnits units_changed);
+void datetime_animate_down ();
+void datetime_animate_up ();
+void datetime_set_notifications (bool notifications);

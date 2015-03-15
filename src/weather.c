@@ -16,11 +16,11 @@ void weather_init (Window *window) {
     b_weather_snowing = gbitmap_create_with_resource (RESOURCE_ID_IMAGE_WEATHER_SNOWING);
     
     // Create temperature Layer
-    s_weather_layer = text_layer_create (GRect(85, 145, 40, 24));
+    s_weather_layer = text_layer_create (GRect(78, 145, 40, 24));
     text_layer_set_background_color (s_weather_layer, GColorClear);
     text_layer_set_text_color (s_weather_layer, GColorWhite);
     text_layer_set_text_alignment (s_weather_layer, GTextAlignmentLeft);
-    text_layer_set_text (s_weather_layer, "1");
+    text_layer_set_text (s_weather_layer, "");
     text_layer_set_font (s_weather_layer, font_roboto_r_12);
     
     // Create Weather Image layer
@@ -46,7 +46,7 @@ void weather_deinit () {
     gbitmap_destroy (b_weather_snowing);
 }
 
-void weather_minutes_callback () {
+void weather_minutes_callback (struct tm *tick_time) {
     if (weather_last_updated == -1 || weather_last_updated >= weather_update_freq) {
         weather_get ();
         weather_last_updated = 0;
@@ -56,7 +56,7 @@ void weather_minutes_callback () {
     weather_last_updated++;
 }
 
-void weather_days_callback () {
+void weather_days_callback (struct tm *tick_time) {
     
 }
 

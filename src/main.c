@@ -9,17 +9,21 @@
 #define KEY_BATTERY 1
 #define KEY_NOTIFICATIONS 2
     
-void main_minutes_callback () { }
-void main_days_callback () { }
+void main_minutes_callback (struct tm *tick_time) { }
+void main_days_callback (struct tm *tick_time) { }
 
 static void main_window_load(Window *window) {
     datetime_init (window);
     weather_init (window);
+    notifications_init (window);
+    status_init (window);
 }
 
 static void main_window_unload(Window *window) {
     datetime_deinit ();
     weather_deinit ();
+    notifications_deinit ();
+    status_deinit ();
 }
 
 static void inbox_received_callback(DictionaryIterator *iterator, void *context) {
@@ -55,8 +59,8 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 
 static void init() {
     // Load our fonts for the application
-    font_roboto_l_46 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_46));
-    font_roboto_l_32 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_32));
+    font_roboto_l_50 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_50));
+    font_roboto_l_34 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_34));
     font_roboto_r_12 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_REGULAR_12));
     
     // Create main Window element and assign to pointer
@@ -88,8 +92,8 @@ static void deinit() {
     window_destroy(s_main_window);
     
     // Unload GFont
-    fonts_unload_custom_font (font_roboto_l_46);
-    fonts_unload_custom_font (font_roboto_l_32);
+    fonts_unload_custom_font (font_roboto_l_50);
+    fonts_unload_custom_font (font_roboto_l_34);
     fonts_unload_custom_font (font_roboto_r_12);
 }
 

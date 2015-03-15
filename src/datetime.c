@@ -2,6 +2,7 @@
 #include "main.h"
 #include "datetime.h"
 #include "weather.h"
+#include "notifications.h"
 
 void datetime_init (Window *window) {
     clock_is_24h = clock_is_24h_style ();
@@ -12,7 +13,7 @@ void datetime_init (Window *window) {
     text_layer_set_text(s_time_layer, "");
     text_layer_set_text_color(s_time_layer, GColorWhite);
     text_layer_set_text_alignment(s_time_layer, GTextAlignmentCenter);
-    text_layer_set_font(s_time_layer, font_roboto_l_32);
+    text_layer_set_font(s_time_layer, font_roboto_l_34);
     
     // Create seconds Layer
     s_seconds_layer = layer_create(GRect(0, 88, 144, 2));
@@ -32,11 +33,10 @@ void datetime_init (Window *window) {
     layer_add_child(window_get_root_layer(window), s_seconds_layer);
     
     // Register with TickTimerService
-    tick_timer_service_subscribe(MINUTE_UNIT | DAY_UNIT, datetime_clock_handler);
+    tick_timer_service_subscribe(SECOND_UNIT | MINUTE_UNIT | DAY_UNIT, datetime_clock_handler);
 }
 
 void datetime_deinit () {
-    // Destroy layers
     text_layer_destroy (s_time_layer);
     text_layer_destroy (s_date_layer);
     layer_destroy (s_seconds_layer);
@@ -56,7 +56,7 @@ void datetime_clock_handler (struct tm *tick_time, TimeUnits units_changed) {
         datetime_update_seconds (tick_time);
     }
     
-    if ((units_changed & MINUTE_UNIT) != 0 || changed) {
+    if ((units_changed & MINUTE_UNIT) != 0 || changed) {        
         datetime_update_minutes (tick_time, changed);
         
         if (changed) {
@@ -85,7 +85,7 @@ void datetime_update_seconds_layer (Layer *layer, GContext *ctx) {
 void datetime_update_minutes (struct tm *tick_time, bool changed_style) {
     if(clock_is_24h_style() == true) {
         if (changed_style) {
-            text_layer_set_font(s_time_layer, font_roboto_l_46);
+            text_layer_set_font(s_time_layer, font_roboto_l_50);
         }
         
         static char buffer[] = "00:00";
@@ -95,7 +95,7 @@ void datetime_update_minutes (struct tm *tick_time, bool changed_style) {
     
     else {
         if (changed_style) {
-            text_layer_set_font(s_time_layer, font_roboto_l_32);
+            text_layer_set_font(s_time_layer, font_roboto_l_34);
         }
         
         static char buffer[] = "00:00am";
@@ -103,8 +103,9 @@ void datetime_update_minutes (struct tm *tick_time, bool changed_style) {
         text_layer_set_text(s_time_layer, buffer);
     }
     
-    main_minutes_callback ();
-    weather_minutes_callback ();
+    main_minutes_callback (tick_time);
+    weather_minutes_callback (tick_time);
+    notifications_minutes_callback (tick_time);
 }
 
 void datetime_update_days (struct tm *tick_time) {
@@ -112,6 +113,66 @@ void datetime_update_days (struct tm *tick_time) {
     strftime(buffer, sizeof(buffer), "%A, %B %e", tick_time);
     text_layer_set_text(s_date_layer, buffer);
     
-    main_days_callback ();
-    weather_days_callback ();
+    main_days_callback (tick_time);
+    weather_days_callback (tick_time);
+    notifications_days_callback (tick_time);
+}
+
+void datetime_set_notifications (bool notifications) {
+    if (notifications == showing_notifications) {
+        return;
+    }
+    
+    if (notifications) {
+        datetime_animate_up ();
+        showing_notifications = true;
+    }
+    else {
+        datetime_animate_down ();
+        showing_notifications = false;
+    }
+}
+
+void datetime_animate_up () {
+    Layer *time_layer = text_layer_get_layer (s_time_layer);
+    Layer *date_layer = text_layer_get_layer (s_date_layer);
+    static PropertyAnimation *s_property_animation_time;
+    static PropertyAnimation *s_property_animation_date;
+    
+    // Set start and end
+    GRect from_frame_time = layer_get_frame(time_layer);
+    GRect to_frame_time = GRect(0, 10, 144, 50);
+    
+    GRect from_frame_date = layer_get_frame(date_layer);
+    GRect to_frame_date = GRect(0, 63, 144, 20);
+
+    // Create the animation
+    s_property_animation_time = property_animation_create_layer_frame(time_layer, &from_frame_time, &to_frame_time);
+    s_property_animation_date = property_animation_create_layer_frame(date_layer, &from_frame_date, &to_frame_date);
+
+    // Schedule to occur ASAP with default settings
+    animation_schedule((Animation*) s_property_animation_time);
+    animation_schedule((Animation*) s_property_animation_date);
+}
+
+void datetime_animate_down () {
+    Layer *time_layer = text_layer_get_layer (s_time_layer);
+    Layer *date_layer = text_layer_get_layer (s_date_layer);
+    static PropertyAnimation *s_property_animation_time;
+    static PropertyAnimation *s_property_animation_date;
+    
+    // Set start and end
+    GRect from_frame_time = layer_get_frame(time_layer);
+    GRect to_frame_time = GRect(0, 35, 144, 50);
+    
+    GRect from_frame_date = layer_get_frame(date_layer);
+    GRect to_frame_date = GRect(0, 88, 144, 20);
+
+    // Create the animation
+    s_property_animation_time = property_animation_create_layer_frame(time_layer, &from_frame_time, &to_frame_time);
+    s_property_animation_date = property_animation_create_layer_frame(date_layer, &from_frame_date, &to_frame_date);
+
+    // Schedule to occur ASAP with default settings
+    animation_schedule((Animation*) s_property_animation_time);
+    animation_schedule((Animation*) s_property_animation_date);
 }

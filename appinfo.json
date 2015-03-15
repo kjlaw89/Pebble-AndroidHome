@@ -16,6 +16,26 @@
     "resources": {
         "media": [
             {
+                "file": "images/bluetooth.png",
+                "name": "IMAGE_BLUETOOTH",
+                "type": "png"
+            },
+            {
+                "file": "images/phone.png",
+                "name": "IMAGE_NOTIFICATIONS_PHONE",
+                "type": "png"
+            },
+            {
+                "file": "images/email.png",
+                "name": "IMAGE_NOTIFICATIONS_EMAIL",
+                "type": "png"
+            },
+            {
+                "file": "images/chat.png",
+                "name": "IMAGE_NOTIFICATIONS_TEXT",
+                "type": "png"
+            },
+            {
                 "file": "images/storming.png",
                 "name": "IMAGE_WEATHER_STORMING",
                 "type": "png"
@@ -62,12 +82,17 @@
             },
             {
                 "file": "fonts/Roboto-Light.ttf",
-                "name": "FONT_ROBOTO_LIGHT_32",
+                "name": "FONT_ROBOTO_LIGHT_50",
                 "type": "font"
             },
             {
                 "file": "fonts/Roboto-Light.ttf",
                 "name": "FONT_ROBOTO_LIGHT_46",
+                "type": "font"
+            },
+            {
+                "file": "fonts/Roboto-Light.ttf",
+                "name": "FONT_ROBOTO_LIGHT_34",
                 "type": "font"
             }
         ]
@@ -82,6 +107,6 @@
     "versionCode": 1,
     "versionLabel": "1.0",
     "watchapp": {
-        "watchface": false
+        "watchface": true
     }
 }

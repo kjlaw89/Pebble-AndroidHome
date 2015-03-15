@@ -20,8 +20,8 @@ static int weather_update_freq = 30;
 // Functions
 void weather_init (Window *window);
 void weather_deinit ();
-void weather_minutes_callback ();
-void weather_days_callback ();
+void weather_minutes_callback (struct tm *tick_time);
+void weather_days_callback (struct tm *tick_time);
 void weather_app_callback (DictionaryIterator *iterator);
 void weather_get ();
 void weather_update (int temperature, const char *condition);
