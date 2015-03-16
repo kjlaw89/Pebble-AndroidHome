@@ -7,8 +7,13 @@
 void datetime_init (Window *window) {
     clock_is_24h = clock_is_24h_style ();
     
+    s_24_start_pos = GRect (0, 35, 144, 50);
+    s_24_end_pos = GRect (0, 10, 144, 50);
+    s_12_start_pos = GRect (0, 50, 144, 50);
+    s_12_end_pos = GRect (0, 25, 144, 50);
+        
     // Create time TextLayer
-    s_time_layer = text_layer_create(GRect(0, 35, 144, 50));
+    s_time_layer = text_layer_create (clock_is_24h ? s_24_start_pos : s_12_start_pos);
     text_layer_set_background_color(s_time_layer, GColorClear);
     text_layer_set_text(s_time_layer, "");
     text_layer_set_text_color(s_time_layer, GColorWhite);
@@ -33,7 +38,7 @@ void datetime_init (Window *window) {
     layer_add_child(window_get_root_layer(window), s_seconds_layer);
     
     // Register with TickTimerService
-    tick_timer_service_subscribe(SECOND_UNIT | MINUTE_UNIT | DAY_UNIT, datetime_clock_handler);
+    tick_timer_service_subscribe(MINUTE_UNIT | DAY_UNIT, datetime_clock_handler);
 }
 
 void datetime_deinit () {
@@ -141,10 +146,10 @@ void datetime_animate_up () {
     
     // Set start and end
     GRect from_frame_time = layer_get_frame(time_layer);
-    GRect to_frame_time = GRect(0, 10, 144, 50);
+    GRect to_frame_time = clock_is_24h ? s_24_end_pos : s_12_end_pos;
     
     GRect from_frame_date = layer_get_frame(date_layer);
-    GRect to_frame_date = GRect(0, 63, 144, 20);
+    GRect to_frame_date = GRect (0, 63, 144, 20);
 
     // Create the animation
     s_property_animation_time = property_animation_create_layer_frame(time_layer, &from_frame_time, &to_frame_time);
@@ -163,7 +168,7 @@ void datetime_animate_down () {
     
     // Set start and end
     GRect from_frame_time = layer_get_frame(time_layer);
-    GRect to_frame_time = GRect(0, 35, 144, 50);
+    GRect to_frame_time = clock_is_24h ? s_24_start_pos : s_12_start_pos;
     
     GRect from_frame_date = layer_get_frame(date_layer);
     GRect to_frame_date = GRect(0, 88, 144, 20);

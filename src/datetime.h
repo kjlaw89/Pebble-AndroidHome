@@ -5,6 +5,12 @@ static TextLayer *s_time_layer;
 static TextLayer *s_date_layer;
 static Layer *s_seconds_layer;
 
+// Positions for 24h vs 12hr
+static GRect s_24_start_pos;
+static GRect s_24_end_pos;
+static GRect s_12_start_pos;
+static GRect s_12_end_pos;
+
 // Clock variables
 static int seconds_width = 0;
 static bool clock_is_24h = true;

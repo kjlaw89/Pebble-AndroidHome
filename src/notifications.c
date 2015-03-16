@@ -2,6 +2,7 @@
 #include "main.h"
 #include "datetime.h"
 #include "notifications.h"
+#include "status.h"
 
 void notifications_init (Window *window) {
     // Load our images
@@ -74,8 +75,6 @@ void notifications_init (Window *window) {
     layer_add_child(window_get_root_layer(window), s_calls_layer);
     layer_add_child(window_get_root_layer(window), s_texts_layer);
     layer_add_child(window_get_root_layer(window), s_emails_layer);
-    
-    //datetime_animate_up ();
 }
 
 void notifications_deinit () {
@@ -120,5 +119,9 @@ void notifications_activate (bool phone, bool text, bool email) {
 }
 
 void notifications_deactivate (bool phone, bool text, bool email) {
+    
+}
+
+void notifications_connected (bool connected) {
     
 }

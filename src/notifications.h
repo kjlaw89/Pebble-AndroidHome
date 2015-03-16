@@ -47,3 +47,4 @@ void notifications_app_callback (DictionaryIterator *iterator);
 void notifications_update ();
 void notifications_activate (bool phone, bool text, bool email);
 void notifications_deactivate (bool phone, bool text, bool email);
+void notifications_connected (bool connected);

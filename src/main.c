@@ -8,6 +8,7 @@
 #define KEY_WEATHER 0
 #define KEY_BATTERY 1
 #define KEY_NOTIFICATIONS 2
+#define KEY_TIMEOUT 3
     
 void main_minutes_callback (struct tm *tick_time) { }
 void main_days_callback (struct tm *tick_time) { }
@@ -35,6 +36,9 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
             case KEY_WEATHER:
                 weather_app_callback (iterator);
                 return;
+            case KEY_TIMEOUT:
+                APP_LOG(APP_LOG_LEVEL_ERROR, "Timeout occurred");
+                return;
             default:
                 APP_LOG(APP_LOG_LEVEL_ERROR, "Key %d not recognized!", (int)t->key);
                 break;
@@ -46,11 +50,12 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
 }
 
 static void inbox_dropped_callback(AppMessageResult reason, void *context) {
-    APP_LOG(APP_LOG_LEVEL_ERROR, "Message dropped!");
+    APP_LOG(APP_LOG_LEVEL_ERROR, "Message dropped! Reason: %d", reason);
 }
 
 static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
     APP_LOG(APP_LOG_LEVEL_ERROR, "Outbox send failed!");
+    weather_get ();
 }
 
 static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {

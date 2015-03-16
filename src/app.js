@@ -1,18 +1,24 @@
 var xhrRequest = function (url, type, callback) {
     var xhr = new XMLHttpRequest();
-    xhr.onload = function () {
-        callback(this.responseText);
+    xhr.timeout = 5000;
+    xhr.onload = function () { callback(this.responseText); };
+    xhr.ontimeout = function () { 
+        Pebble.sendAppMessage(
+            { "KEY_TIMEOUT": 1 }, 
+            function (e) {}, 
+            function (e)  {}
+        ); 
     };
     xhr.open(type, url);
     xhr.send();
 };
 
 function locationSuccess(pos) {
-    // Construct URL
-    //var url = "http://api.openweathermap.org/data/2.5/weather?lat=" +
-        //pos.coords.latitude + "&lon=" + pos.coords.longitude;
+    // Construct URL    
+    var url = "https://api.forecast.io/forecast/d480a4e2238ebafa1290f7422b788f5a/" +
+        pos.coords.latitude +","+ pos.coords.longitude;
     
-    var url = "https://api.forecast.io/forecast/d480a4e2238ebafa1290f7422b788f5a/39.911972,-82.971662";
+    console.log (url);
 
     // Send request to OpenWeatherMap
     xhrRequest(url, 'GET', function(responseText) {
@@ -62,9 +68,6 @@ function getWeather() {
 // Listen for when the watchface is opened
 Pebble.addEventListener('ready', function(e) {
     console.log("PebbleKit JS ready!");
-
-    // Get the initial weather
-    getWeather();
 });
 
 // Listen for when an AppMessage is received

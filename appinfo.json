@@ -4,11 +4,11 @@
         "KEY_CONDITIONS": 6,
         "KEY_NOTIFICATIONS": 2,
         "KEY_TEMPERATURE": 5,
+        "KEY_TIMEOUT": 3,
         "KEY_WEATHER": 0
     },
     "capabilities": [
-        "location",
-        "configurable"
+        "location"
     ],
     "companyName": "kjtehprogrammer@gmail.com",
     "longName": "AndroidHome",

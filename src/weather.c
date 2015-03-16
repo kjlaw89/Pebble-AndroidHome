@@ -1,6 +1,7 @@
 #include <pebble.h>
 #include "main.h"
 #include "weather.h"
+#include "status.h"
 
 #define KEY_WEATHER 0
 #define KEY_TEMPERATURE 5
@@ -48,8 +49,14 @@ void weather_deinit () {
 
 void weather_minutes_callback (struct tm *tick_time) {
     if (weather_last_updated == -1 || weather_last_updated >= weather_update_freq) {
-        weather_get ();
-        weather_last_updated = 0;
+        if (status_is_connected ()) {
+            weather_get ();
+            weather_last_updated = 0;    
+        }
+        else {
+            weather_last_updated = -1;
+        }
+        
         return;
     }
     
@@ -146,5 +153,12 @@ void weather_update (int temperature, const char *condition) {
     if (strcmp (condition, "snow") == 0) {
         bitmap_layer_set_bitmap (s_weather_image_layer, b_weather_snowing);
         return;
+    }
+}
+
+void weather_connected (bool connected) {
+    if (connected && (weather_last_updated == -1 || weather_last_updated >= weather_update_freq)) {
+        weather_get ();
+        weather_last_updated = 0;
     }
 }
