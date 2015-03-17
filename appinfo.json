@@ -16,6 +16,26 @@
     "resources": {
         "media": [
             {
+                "file": "fonts/Roboto-Regular.ttf",
+                "name": "FONT_ROBOTO_REGULAR_12",
+                "type": "font"
+            },
+            {
+                "file": "fonts/Roboto-Light.ttf",
+                "name": "FONT_ROBOTO_LIGHT_18",
+                "type": "font"
+            },
+            {
+                "file": "fonts/Roboto-Light.ttf",
+                "name": "FONT_ROBOTO_LIGHT_38",
+                "type": "font"
+            },
+            {
+                "file": "fonts/Roboto-Light.ttf",
+                "name": "FONT_ROBOTO_LIGHT_50",
+                "type": "font"
+            },
+            {
                 "file": "images/bluetooth.png",
                 "name": "IMAGE_BLUETOOTH",
                 "type": "png"
@@ -64,36 +84,6 @@
                 "file": "images/night.png",
                 "name": "IMAGE_WEATHER_NIGHT",
                 "type": "png"
-            },
-            {
-                "file": "fonts/Roboto-Regular.ttf",
-                "name": "FONT_ROBOTO_REGULAR_10",
-                "type": "font"
-            },
-            {
-                "file": "fonts/Roboto-Regular.ttf",
-                "name": "FONT_ROBOTO_REGULAR_12",
-                "type": "font"
-            },
-            {
-                "file": "fonts/Roboto-Regular.ttf",
-                "name": "FONT_ROBOTO_REGULAR_16",
-                "type": "font"
-            },
-            {
-                "file": "fonts/Roboto-Light.ttf",
-                "name": "FONT_ROBOTO_LIGHT_50",
-                "type": "font"
-            },
-            {
-                "file": "fonts/Roboto-Light.ttf",
-                "name": "FONT_ROBOTO_LIGHT_46",
-                "type": "font"
-            },
-            {
-                "file": "fonts/Roboto-Light.ttf",
-                "name": "FONT_ROBOTO_LIGHT_34",
-                "type": "font"
             }
         ]
     },

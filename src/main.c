@@ -37,10 +37,10 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
                 weather_app_callback (iterator);
                 return;
             case KEY_TIMEOUT:
-                APP_LOG(APP_LOG_LEVEL_ERROR, "Timeout occurred");
+                APP_LOG (APP_LOG_LEVEL_ERROR, "Timeout occurred");
                 return;
             default:
-                APP_LOG(APP_LOG_LEVEL_ERROR, "Key %d not recognized!", (int)t->key);
+                APP_LOG (APP_LOG_LEVEL_INFO, "Key %d not recognized!", (int)t->key);
                 break;
         }
 
@@ -54,8 +54,19 @@ static void inbox_dropped_callback(AppMessageResult reason, void *context) {
 }
 
 static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResult reason, void *context) {
-    APP_LOG(APP_LOG_LEVEL_ERROR, "Outbox send failed!");
-    weather_get ();
+    Tuple *t = dict_read_first(iterator);
+
+    // For all items
+    while(t != NULL) {
+        switch(t->key) {
+            case KEY_WEATHER:
+                weather_get_failure ();
+                return;
+        }
+
+        // Look for next item
+        t = dict_read_next(iterator);
+    }
 }
 
 static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
@@ -65,7 +76,8 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 static void init() {
     // Load our fonts for the application
     font_roboto_l_50 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_50));
-    font_roboto_l_34 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_34));
+    font_roboto_l_38 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_38));
+    font_roboto_l_18 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_18));
     font_roboto_r_12 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_REGULAR_12));
     
     // Create main Window element and assign to pointer
@@ -98,7 +110,8 @@ static void deinit() {
     
     // Unload GFont
     fonts_unload_custom_font (font_roboto_l_50);
-    fonts_unload_custom_font (font_roboto_l_34);
+    fonts_unload_custom_font (font_roboto_l_38);
+    fonts_unload_custom_font (font_roboto_l_18);
     fonts_unload_custom_font (font_roboto_r_12);
 }
 

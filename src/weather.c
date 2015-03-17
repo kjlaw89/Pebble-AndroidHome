@@ -54,7 +54,7 @@ void weather_minutes_callback (struct tm *tick_time) {
             weather_last_updated = 0;    
         }
         else {
-            weather_last_updated = -1;
+            weather_get_failure ();
         }
         
         return;
@@ -94,7 +94,7 @@ void weather_app_callback (DictionaryIterator *iterator) {
         t = dict_read_next(iterator);
     }
     
-    weather_update (temperature, condition);
+    weather_update (temperature, condition, false);
 }
 
 void weather_get () {
@@ -108,7 +108,23 @@ void weather_get () {
     app_message_outbox_send();
 }
 
-void weather_update (int temperature, const char *condition) {
+void weather_get_failure () {
+    APP_LOG(APP_LOG_LEVEL_WARNING, "Failure to get weather or no connection");
+    
+    if (persist_exists (KEY_WEATHER) && time (NULL) - persist_read_int (KEY_WEATHER) < 1800) {
+        char condition[20];
+        persist_read_string (KEY_CONDITIONS, condition, 20);
+        weather_update (persist_read_int (KEY_TEMPERATURE), condition, true);
+    }
+    else {
+        layer_set_hidden (text_layer_get_layer (s_weather_layer), true);
+        layer_set_hidden (bitmap_layer_get_layer (s_weather_image_layer), true);
+    }
+    
+    weather_last_updated = -1;
+}
+
+void weather_update (int temperature, const char *condition, bool stored) {
     static char temperature_buffer[8];
     
     snprintf(temperature_buffer, sizeof(temperature_buffer), "%d °F", temperature);
@@ -116,6 +132,15 @@ void weather_update (int temperature, const char *condition) {
     
     if (condition == NULL) {
         return;
+    }
+    
+    layer_set_hidden (text_layer_get_layer (s_weather_layer), false);
+    layer_set_hidden (bitmap_layer_get_layer (s_weather_image_layer), false);
+    
+    if (!stored) {
+        persist_write_int (KEY_WEATHER, time (NULL));
+        persist_write_int (KEY_TEMPERATURE, temperature);
+        persist_write_string (KEY_CONDITIONS, condition);
     }
     
     if (strcmp (condition, "clear-day") == 0) {
