@@ -8,13 +8,24 @@
         "KEY_WEATHER": 0
     },
     "capabilities": [
-        "location"
+        "location",
+        "configurable"
     ],
     "companyName": "kjtehprogrammer@gmail.com",
     "longName": "AndroidHome",
     "projectType": "native",
     "resources": {
         "media": [
+            {
+                "file": "images/charge.png",
+                "name": "IMAGE_CHARGE",
+                "type": "png"
+            },
+            {
+                "file": "images/battery.png",
+                "name": "IMAGE_BATTERY",
+                "type": "png"
+            },
             {
                 "file": "fonts/Roboto-Regular.ttf",
                 "name": "FONT_ROBOTO_REGULAR_12",
@@ -87,12 +98,8 @@
             }
         ]
     },
-    "sdkVersion": "3",
+    "sdkVersion": "2",
     "shortName": "AndroidHome",
-    "targetPlatforms": [
-        "aplite",
-        "basalt"
-    ],
     "uuid": "60a493b7-1744-43fd-9519-51a8361dfdb3",
     "versionCode": 1,
     "versionLabel": "1.0",

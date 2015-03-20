@@ -7,12 +7,20 @@
 void datetime_init (Window *window) {
     clock_is_24h = clock_is_24h_style ();
     
+    if (clock_is_24h) {
+        font_roboto_l_50 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_50));    
+    }
+    else {
+        font_roboto_l_38 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_38));
+        font_roboto_l_18 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_18));
+    }
+    
     s_24_start_pos = GRect (0, 35, 144, 50);
     s_24_end_pos = GRect (0, 10, 144, 50);
-    s_12_start_pos = GRect (0, 48, 107, 50);
-    s_12_end_pos = GRect (0, 23, 107, 50);
-    s_12_type_start_pos = GRect (108, 68, 34, 24);
-    s_12_type_end_pos = GRect (108, 43, 34, 24);
+    s_12_start_pos = GRect (0, 48, 102, 50);
+    s_12_end_pos = GRect (0, 23, 102, 50);
+    s_12_type_start_pos = GRect (103, 68, 39, 24);
+    s_12_type_end_pos = GRect (103, 43, 39, 24);
     
     strcpy (s_time_format, clock_is_24h ? "%H:%M" : "%l:%M");
         
@@ -51,7 +59,16 @@ void datetime_init (Window *window) {
 
 void datetime_deinit () {
     text_layer_destroy (s_time_layer);
+    text_layer_destroy (s_time_type_layer);
     text_layer_destroy (s_date_layer);
+    
+    if (clock_is_24h) {
+        fonts_unload_custom_font (font_roboto_l_50);
+    }
+    else {
+        fonts_unload_custom_font (font_roboto_l_38);
+        fonts_unload_custom_font (font_roboto_l_18);
+    }
 }
 
 void datetime_clock_handler (struct tm *tick_time, TimeUnits units_changed) {

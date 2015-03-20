@@ -5,6 +5,11 @@ static TextLayer *s_time_layer;
 static TextLayer *s_time_type_layer;
 static TextLayer *s_date_layer;
 
+// Fonts
+GFont font_roboto_l_50;
+GFont font_roboto_l_38;
+GFont font_roboto_l_18;
+
 // Positions for 24h vs 12hr
 static GRect s_24_start_pos;
 static GRect s_24_end_pos;

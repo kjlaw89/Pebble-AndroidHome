@@ -24,6 +24,6 @@ void weather_minutes_callback (struct tm *tick_time);
 void weather_days_callback (struct tm *tick_time);
 void weather_app_callback (DictionaryIterator *iterator);
 void weather_get ();
-void weather_get_failure ();
+bool weather_get_cache (bool hide);
 void weather_update (int temperature, const char *condition, bool stored);
 void weather_connected (bool connected);

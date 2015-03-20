@@ -49,12 +49,12 @@ void weather_deinit () {
 
 void weather_minutes_callback (struct tm *tick_time) {
     if (weather_last_updated == -1 || weather_last_updated >= weather_update_freq) {
-        if (status_is_connected ()) {
+        if (status_is_connected () && !weather_get_cache (false)) {
             weather_get ();
             weather_last_updated = 0;    
         }
         else {
-            weather_get_failure ();
+            weather_get_cache (true);
         }
         
         return;
@@ -108,20 +108,22 @@ void weather_get () {
     app_message_outbox_send();
 }
 
-void weather_get_failure () {
+bool weather_get_cache (bool hide) {
     APP_LOG(APP_LOG_LEVEL_WARNING, "Failure to get weather or no connection");
     
     if (persist_exists (KEY_WEATHER) && time (NULL) - persist_read_int (KEY_WEATHER) < 1800) {
         char condition[20];
         persist_read_string (KEY_CONDITIONS, condition, 20);
         weather_update (persist_read_int (KEY_TEMPERATURE), condition, true);
+        return true;
     }
-    else {
+    else if (hide) {
         layer_set_hidden (text_layer_get_layer (s_weather_layer), true);
         layer_set_hidden (bitmap_layer_get_layer (s_weather_image_layer), true);
+        weather_last_updated = -1;
     }
     
-    weather_last_updated = -1;
+    return false;
 }
 
 void weather_update (int temperature, const char *condition, bool stored) {
@@ -141,6 +143,11 @@ void weather_update (int temperature, const char *condition, bool stored) {
         persist_write_int (KEY_WEATHER, time (NULL));
         persist_write_int (KEY_TEMPERATURE, temperature);
         persist_write_string (KEY_CONDITIONS, condition);
+    }
+    else {
+        int last_time = persist_read_int (KEY_WEATHER);
+        weather_last_updated = (int) ((time (NULL) - last_time) / 60);
+        APP_LOG(APP_LOG_LEVEL_INFO, "Last attempt was %d minutes ago", weather_last_updated);
     }
     
     if (strcmp (condition, "clear-day") == 0) {

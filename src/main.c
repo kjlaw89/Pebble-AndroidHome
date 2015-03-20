@@ -60,7 +60,7 @@ static void outbox_failed_callback(DictionaryIterator *iterator, AppMessageResul
     while(t != NULL) {
         switch(t->key) {
             case KEY_WEATHER:
-                weather_get_failure ();
+                weather_get_cache (true);
                 return;
         }
 
@@ -75,9 +75,6 @@ static void outbox_sent_callback(DictionaryIterator *iterator, void *context) {
 
 static void init() {
     // Load our fonts for the application
-    font_roboto_l_50 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_50));
-    font_roboto_l_38 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_38));
-    font_roboto_l_18 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_LIGHT_18));
     font_roboto_r_12 = fonts_load_custom_font(resource_get_handle(RESOURCE_ID_FONT_ROBOTO_REGULAR_12));
     
     // Create main Window element and assign to pointer
@@ -109,9 +106,6 @@ static void deinit() {
     window_destroy(s_main_window);
     
     // Unload GFont
-    fonts_unload_custom_font (font_roboto_l_50);
-    fonts_unload_custom_font (font_roboto_l_38);
-    fonts_unload_custom_font (font_roboto_l_18);
     fonts_unload_custom_font (font_roboto_r_12);
 }
 

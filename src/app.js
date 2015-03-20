@@ -75,3 +75,9 @@ Pebble.addEventListener('appmessage', function(e) {
     console.log ("Got message: " + JSON.stringify(e));
     getWeather();
 });
+
+// Listen for pebble app configuration
+Pebble.addEventListener('showConfiguration', function(e) {
+  // Show config page
+  Pebble.openURL('http://projects.nsfugames.com/Pebble/AndroidHome.html');
+});
