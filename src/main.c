@@ -9,6 +9,7 @@
 #define KEY_BATTERY 1
 #define KEY_NOTIFICATIONS 2
 #define KEY_TIMEOUT 3
+#define KEY_CONFIGURATION 4
     
 void main_minutes_callback (struct tm *tick_time) { }
 void main_days_callback (struct tm *tick_time) { }
@@ -35,6 +36,9 @@ static void inbox_received_callback(DictionaryIterator *iterator, void *context)
         switch(t->key) {
             case KEY_WEATHER:
                 weather_app_callback (iterator);
+                return;
+            case KEY_CONFIGURATION:
+                weather_configuration (iterator);
                 return;
             case KEY_TIMEOUT:
                 APP_LOG (APP_LOG_LEVEL_ERROR, "Timeout occurred");

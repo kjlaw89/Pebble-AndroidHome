@@ -7,6 +7,12 @@
 #define KEY_TEMPERATURE 5
 #define KEY_CONDITIONS 6
     
+#define KEY_CONFIG_FORECAST_KEY 41
+#define KEY_CONFIG_DEGREES 42
+#define KEY_CONFIG_REFRESH 43
+#define KEY_CONFIG_LOW_POWER 44
+#define KEY_CONFIG_LOW_REFRESH 45
+    
 void weather_init (Window *window) {
     // Load our images
     b_weather_night = gbitmap_create_with_resource (RESOURCE_ID_IMAGE_WEATHER_NIGHT);
@@ -31,6 +37,19 @@ void weather_init (Window *window) {
     // Add it as a child layer to the Window's root layer
     layer_add_child(window_get_root_layer(window), text_layer_get_layer(s_weather_layer));
     layer_add_child(window_get_root_layer(window), bitmap_layer_get_layer(s_weather_image_layer));
+    
+    // Load our variables in from persistent storage
+    if (persist_exists (KEY_CONFIG_FORECAST_KEY)) {
+        persist_read_string (KEY_CONFIG_FORECAST_KEY, weather_key, 60);
+    }
+    
+    weather_in_celsius = persist_exists (KEY_CONFIG_DEGREES) ? persist_read_bool (KEY_CONFIG_DEGREES) : false;
+    weather_refresh = persist_exists (KEY_CONFIG_REFRESH) ? persist_read_int (KEY_CONFIG_REFRESH) : 30;
+    weather_low_power = persist_exists (KEY_CONFIG_LOW_POWER) ? persist_read_int (KEY_CONFIG_LOW_POWER) : 20;
+    weather_low_refresh = persist_exists (KEY_CONFIG_LOW_REFRESH) ? persist_read_int (KEY_CONFIG_LOW_REFRESH) : 60;
+    weather_update_freq = weather_refresh;
+    
+    weather_set_buffer ();
 }
 
 void weather_deinit () {
@@ -67,6 +86,15 @@ void weather_days_callback (struct tm *tick_time) {
     
 }
 
+void weather_set_buffer () {
+    if (weather_in_celsius) {
+        strcpy (weather_text_buffer, "%d °C");
+    }
+    else {
+        strcpy (weather_text_buffer, "%d °F");
+    }
+}
+
 void weather_app_callback (DictionaryIterator *iterator) {    
     static int temperature = 0;
     static const char *condition;
@@ -95,6 +123,67 @@ void weather_app_callback (DictionaryIterator *iterator) {
     }
     
     weather_update (temperature, condition, false);
+}
+
+void weather_configuration (DictionaryIterator *iterator) {
+    bool update_weather = false;
+    bool old_celsius = weather_in_celsius;
+    Tuple *t = dict_read_first(iterator);
+
+    // For all items
+    while(t != NULL) {
+        switch(t->key) {
+             case KEY_CONFIG_FORECAST_KEY:
+                if (strcmp (weather_key, t->value->cstring) != 0) {
+                    update_weather = true;
+                }
+            
+                strcpy (weather_key, t->value->cstring);
+                persist_write_string (KEY_CONFIG_FORECAST_KEY, weather_key);
+                break;
+            case KEY_CONFIG_DEGREES:
+                weather_in_celsius = (strcmp (t->value->cstring, "c") == 0);
+                
+                if (old_celsius != weather_in_celsius) {
+                    weather_set_buffer ();
+                    update_weather = true;
+                }
+                
+                persist_write_bool (KEY_CONFIG_DEGREES, weather_in_celsius);
+                break;
+            case KEY_CONFIG_REFRESH:
+                weather_refresh = (int)t->value->int32;
+                persist_write_int (KEY_CONFIG_REFRESH, weather_refresh);
+                break;
+            case KEY_CONFIG_LOW_POWER:
+                weather_low_power = (int)t->value->int32;
+                persist_write_int (KEY_CONFIG_LOW_POWER, weather_low_power);
+                break;
+            case KEY_CONFIG_LOW_REFRESH:
+                weather_low_refresh = (int)t->value->int32;
+                persist_write_int (KEY_CONFIG_LOW_REFRESH, weather_low_refresh);
+                break;
+            default:
+                APP_LOG(APP_LOG_LEVEL_INFO, "Key %d not recognized!", (int)t->key);
+                break;
+        }
+
+        // Look for next item
+        t = dict_read_next(iterator);
+    }
+    
+    // Make sure to change update freq based on new settings and current power level
+    if (status_battery_level > 0 && status_battery_level <= weather_low_power && !status_battery_charging) {
+        weather_update_freq = weather_low_refresh;
+    }
+    else {
+        weather_update_freq = weather_refresh;
+    }
+    
+    if (update_weather) {
+        weather_last_updated = 0;
+        weather_get ();
+    }
 }
 
 void weather_get () {
@@ -129,8 +218,8 @@ bool weather_get_cache (bool hide) {
 void weather_update (int temperature, const char *condition, bool stored) {
     static char temperature_buffer[8];
     
-    snprintf(temperature_buffer, sizeof(temperature_buffer), "%d °F", temperature);
-    text_layer_set_text(s_weather_layer, temperature_buffer);
+    snprintf(temperature_buffer, sizeof (temperature_buffer), weather_text_buffer, temperature);
+    text_layer_set_text (s_weather_layer, temperature_buffer);
     
     if (condition == NULL) {
         return;
@@ -193,4 +282,16 @@ void weather_connected (bool connected) {
         weather_get ();
         weather_last_updated = 0;
     }
+}
+
+void weather_power (int level, bool charging) {
+    status_battery_level = level;
+    status_battery_charging = charging;
+    
+    if (level <= weather_low_power && !charging) {
+        weather_update_freq = weather_low_refresh;
+        return;
+    }
+    
+    weather_update_freq = weather_refresh;
 }

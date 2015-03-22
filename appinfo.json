@@ -2,6 +2,12 @@
     "appKeys": {
         "KEY_BATTERY": 1,
         "KEY_CONDITIONS": 6,
+        "KEY_CONFIGURATION": 4,
+        "KEY_CONFIG_DEGREES": 42,
+        "KEY_CONFIG_FORECAST_KEY": 41,
+        "KEY_CONFIG_LOW_POWER": 44,
+        "KEY_CONFIG_LOW_REFRESH": 45,
+        "KEY_CONFIG_REFRESH": 43,
         "KEY_NOTIFICATIONS": 2,
         "KEY_TEMPERATURE": 5,
         "KEY_TIMEOUT": 3,

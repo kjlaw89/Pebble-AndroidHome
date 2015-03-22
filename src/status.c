@@ -84,8 +84,11 @@ void status_battery_handler (BatteryChargeState charge) {
     text_layer_set_text (s_battery_layer, buffer);
     
     s_battery_level = (int) charge.charge_percent;
+    s_battery_charging = charge.is_charging || charge.is_plugged;
     layer_mark_dirty (s_battery_fill_layer);
     layer_set_hidden (bitmap_layer_get_layer (s_battery_charge_image_layer), !charge.is_charging && !charge.is_plugged);
+    
+    weather_power (s_battery_level, s_battery_charging);
 }
 
 void status_battery_fill_proc (struct Layer *layer, GContext *ctx) {

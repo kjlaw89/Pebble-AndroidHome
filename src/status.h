@@ -15,6 +15,7 @@ static GBitmap *b_battery_charge;
 // Variables
 static bool s_bluetooth_connected = false;
 static int s_battery_level = 0;
+static int s_battery_charging = false;
 
 void status_init (Window *window);
 void status_deinit ();
